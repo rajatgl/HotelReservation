@@ -4,10 +4,14 @@ class Hotel
 {
 	private String name;
 	private int normalCustomerRate;
+	private int weekendRate;
+	private int weekdayRate;
 	
-	Hotel(String name, int normalCustomerRate){
+	Hotel(String name, int normalCustomerRate, int weekendRate, int weekdayRate){
 		this.name = name;
 		this.normalCustomerRate = normalCustomerRate;
+		this.weekendRate = weekendRate;
+		this.weekdayRate = weekdayRate;
 	}
 	
 	Hotel(){}
@@ -18,6 +22,14 @@ class Hotel
 	
 	public int getNormalCustomerRate() {
 		return this.normalCustomerRate;
+	}
+	
+	public int getWeekendRate() {
+		return this.weekendRate;
+	}
+	
+	public int getWeekdayRate() {
+		return this.weekdayRate;
 	}
 }
 
@@ -33,7 +45,7 @@ public class HotelReservation {
 		for(Hotel hotel : hotels) {
 			if(cost > hotel.getNormalCustomerRate() * days) {
 				cost = hotel.getNormalCustomerRate() * days;
-				cheapestHotel = new Hotel(hotel.getName(), hotel.getNormalCustomerRate());
+				cheapestHotel = new Hotel(hotel.getName(), hotel.getNormalCustomerRate(), hotel.getWeekendRate(), hotel.getWeekdayRate());
 			}
 		}
 		return cheapestHotel;
@@ -44,9 +56,30 @@ public class HotelReservation {
 		hotels = new ArrayList<Hotel>();
 		System.out.println("Welcome to Hotel Reservation Software");
 		
-		hotels.add(new Hotel("Lakewood", 100));
-		hotels.add(new Hotel("Bridgewood", 150));
-		hotels.add(new Hotel("Ridgewood", 120));
+		//hotels.add(new Hotel("Lakewood", 100, 40, 20));
+		//hotels.add(new Hotel("Bridgewood", 150, 60, 30));
+		//hotels.add(new Hotel("Ridgewood", 120, 80, 40));
+		while(true) {
+			System.out.println("Enter choice: 1 for adding hotel, anything else for exit.");
+			int choice = sc.nextInt();
+			sc.nextLine(); //for garbage
+			if(choice == 1) {
+				System.out.println("Enter Hotel Name: ");
+				String name = sc.nextLine();
+				System.out.println("Enter Hotel Normal Rate: ");
+				int normalCustomerRate = sc.nextInt();
+				System.out.println("Enter Hotel Weekend Rate: ");
+				int weekendRate = sc.nextInt();
+				System.out.println("Enter Hotel Weekday Rate: ");
+				int weekdayRate = sc.nextInt();
+				
+				addHotel(new Hotel(name, normalCustomerRate, weekendRate, weekdayRate));
+			}
+			else {
+				System.out.println("Exiting... Added " + hotels.size() + " hotels.");
+				break;
+			}
+		}
 		
 		while(true) {
 			System.out.println("Enter Dates: Seperate dates with comma");
