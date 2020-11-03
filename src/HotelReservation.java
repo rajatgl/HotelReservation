@@ -39,12 +39,34 @@ public class HotelReservation {
 	private static void addHotel(Hotel hotel) {
 		hotels.add(hotel);
 	}
-	private static Hotel getCheapestHotel(int days) {
+	private static int hotelCost(Date startDate, int days, Hotel hotel) {
+		
+		int weekends = (days/7)*2;
+		int weekdays = days - weekends;
+		
+		int modDays = days%7;
+		int startDay = startDate.getDay();
+		
+		int currentDay = startDay;
+		for(int i=0;i<modDays;i++) {
+			
+			if(currentDay == 0 || currentDay == 6)
+				weekends++;
+			else
+				weekdays++;
+			
+			currentDay++;
+			currentDay%=7;
+		}
+		
+		return (hotel.getWeekdayRate() * weekdays) + (hotel.getWeekendRate() * weekends);
+	}
+	private static Hotel getCheapestHotel(Date startDate, int days) {
 		long cost = 100000000;
 		Hotel cheapestHotel = new Hotel();
 		for(Hotel hotel : hotels) {
-			if(cost > hotel.getNormalCustomerRate() * days) {
-				cost = hotel.getNormalCustomerRate() * days;
+			if(cost > hotelCost(startDate, days, hotel)) {
+				cost = hotelCost(startDate, days, hotel);
 				cheapestHotel = new Hotel(hotel.getName(), hotel.getNormalCustomerRate(), hotel.getWeekendRate(), hotel.getWeekdayRate());
 			}
 		}
@@ -107,10 +129,11 @@ public class HotelReservation {
 			long difference = dateEnd.getTime() - dateStart.getTime();
 		    float daysBetween = (difference / (1000*60*60*24));
 		    
-		    System.out.println("Days Between " + daysBetween);
+		    System.out.println("Days Between " + daysBetween+1);
+		    
 			
-			Hotel cheapestHotel = getCheapestHotel((int)Math.ceil(daysBetween));			
-			System.out.println("Hotel Name: " + cheapestHotel.getName() + " Total Rate is: " + cheapestHotel.getNormalCustomerRate() * daysBetween);
+			Hotel cheapestHotel = getCheapestHotel(dateStart, (int)Math.ceil(daysBetween+1));			
+			System.out.println("Hotel Name: " + cheapestHotel.getName() + " Total Rate is: " + hotelCost(dateStart, (int)Math.ceil(daysBetween+1), cheapestHotel));
 		}
 	}
 }
